@@ -99,6 +99,8 @@ times = 1:200 %>%
   ) %>%
   filter(time < quantile(time, 0.99))
 
+png('pow.png', height=640, width=640)
+
 ggplot(times, aes(x = k, y = time / 1e3, group = expr)) +
   geom_jitter(aes(color = expr), alpha = 0.1) +
   geom_smooth(method = "lm", color = "black", size = 0.1) +
@@ -118,4 +120,3 @@ ggplot(times, aes(x = k, y = time / 1e3, group = expr)) +
          " kth power using different approaches")
        )
 
-ggsave('pow.png')
