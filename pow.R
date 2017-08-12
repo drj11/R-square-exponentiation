@@ -117,3 +117,5 @@ ggplot(times, aes(x = k, y = time / 1e3, group = expr)) +
          "Time taken to raise a 3x3 matrix to the", 
          " kth power using different approaches")
        )
+
+ggsave('pow.png')
