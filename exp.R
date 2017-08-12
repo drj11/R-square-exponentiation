@@ -27,7 +27,7 @@ pow_iter = function (A, k) {
   if(k==0) {
     diag(1, nrow(A))
   } else {
-    A %*% (A %^% (k-1))
+    A %*% pow_iter(A, (k-1))
   }
 }
 
@@ -35,6 +35,18 @@ pow_iter = function (A, k) {
 # See SICP 2nd edition, 1.2.4
 # https://mitpress.mit.edu/sicp/chapter1/node15.html
 
+pow_sq_recursive = function (A, k) {
+  if(k == 0) {
+    # identity
+    diag(1, nrow(A))
+  } else if(k %% 2 == 1) {
+    A %*% pow_sq_recursive(A, k-1)
+  } else {
+    pow_sq_recursive(A %*% A, k %/% 2)
+  }
+}
+
+# Iterative version of pow_sq_recursive
 pow_sq_ = function (A, k, f) {
   if(k == 0) {
     f
@@ -45,13 +57,15 @@ pow_sq_ = function (A, k, f) {
   }
 }
 
-pow_sq = function (A, k) {
+pow_sq_iter = function (A, k) {
   I = diag(1, nrow(A))
   pow_sq_(A, k, I)
 }
 
-`%^%` = pow_sq
+`%^%` = pow_sq_recursive
 
+# Eric's Eigenvalue method.
+# https://eric.netlify.com/2017/08/08/taking-powers-of-a-matrix-in-r/
 pow_eigen = function(A, k) {
   eig = eigen(A)
   stopifnot(length(unique(eig$values)) == nrow(A))
@@ -65,10 +79,10 @@ pow_eigen = function(A, k) {
 `%^^%` = pow_eigen
 
 print("pow_iter")
-test_properties(`%^%`, A)
+test_properties(pow_iter, A)
 
 print("pow_sq")
-test_properties(pow_sq, A)
+test_properties(pow_sq_recursive, A)
 
 print("pow_eigen")
 test_properties(pow_eigen, A)
